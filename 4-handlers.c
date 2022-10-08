@@ -1,127 +1,53 @@
 #include "monty.h"
 
-
 /**
- * div_handler - divides the second top element of the
- * stack by the top element of the stack
- * @stack: double pointer to the stack
- * @line_no: the line in which this command is called
- * Return: nothing
+ * pint_handler - handles pint operation
+ * @s: pointer to stack
+ * @l: line number
  */
-void div_handler(stack_t **stack, unsigned int line_no)
+void pint_handler(stack_t **s, unsigned int l)
 {
-	int size = stack_size((*stack)->next);
+	(void)s;
 
-	if (size < 2)
+	if (!global.head)
 	{
-		fprintf(stderr, "L%u: can't div, stack too short\n", line_no);
-		global.err_status = EXIT_FAILURE;
+		dprintf(2, "L%u: can't pint, stack empty\n", l);
+		global.quit = EXIT_FAILURE;
 		return;
 	}
-	if (!(*stack)->next->n)
-	{
-		fprintf(stderr, "L%u: division by zero\n", line_no);
-		global.err_status = EXIT_FAILURE;
-		return;
-	}
-
-	(*stack)->next->next->n /= (*stack)->next->n;
-
-	pop_handler(stack, line_no);
+	printf("%d\n", global.head->n);
 }
 
 /**
- * mul_handler - multiplies the second top element of the stack with
- * the top element of the stack
- * @stack: double pointer to the stack
- * @line_no: the line in which this command is called
- * Return: nothing
+ * temp_handler - handles mode change
+ * @s: pointer to stack
+ * @l: line number
  */
-void mul_handler(stack_t **stack, unsigned int line_no)
+void temp_handler(stack_t **s, unsigned int l)
 {
-	int size = stack_size((*stack)->next);
-
-	if (size < 2)
-	{
-		fprintf(stderr, "L%u: can't mul, stack too short\n", line_no);
-		global.err_status = EXIT_FAILURE;
-		return;
-	}
-
-	(*stack)->next->next->n *= (*stack)->next->n;
-
-	pop_handler(stack, line_no);
+	(void)s;
+	(void)l;
 }
 
 /**
- * mod_handler - computes the rest of the division of the
- * second top element of the stack by the top element of the stack.
- * @stack: double pointer to the stack
- * @line_no: the line in which this command is called
- * Return: nothing
+ * pchr_handler - Prints the character in the top value
+ *               node of a stack_t linked list.
+ * @stack: A pointer to the top mode node of a stack_t linked list.
+ * @line_number: The current working line number of a Monty bytecodes file.
  */
-void mod_handler(stack_t **stack, unsigned int line_no)
+void pchr_handler(stack_t **stack, unsigned int line_number)
 {
-	int size = stack_size((*stack)->next);
-
-	if (size < 2)
+	if ((*stack) == NULL)
 	{
-		fprintf(stderr, "L%u: can't mod, stack too short\n", line_no);
-		global.err_status = EXIT_FAILURE;
+		fprintf(stderr, "L%u: can't pchar, stack empty\n", line_number);
+		global.quit = EXIT_FAILURE;
 		return;
 	}
-	if (!(*stack)->next->n)
+	if ((*stack)->n < 0 || (*stack)->n > 127)
 	{
-		fprintf(stderr, "L%u: division by zero\n", line_no);
-		global.err_status = EXIT_FAILURE;
+		fprintf(stderr, "L%u: can't pchar, value out of range\n", line_number);
+		global.quit = EXIT_FAILURE;
 		return;
 	}
-
-	(*stack)->next->next->n %= (*stack)->next->n;
-	pop_handler(stack, line_no);
-}
-
-
-/**
- * add_handler - adds the top two elements of the stack
- * @stack: double pointer to the stack
- * @line_no: the line number where the pop command is called
- * Return: nothing
- */
-void add_handler(stack_t **stack, unsigned int line_no)
-{
-	int size = stack_size((*stack)->next);
-
-	if (size < 2)
-	{
-		fprintf(stderr, "L%d: can't add, stack too short\n", line_no);
-		global.err_status = EXIT_FAILURE;
-		return;
-	}
-	(*stack)->next->next->n += (*stack)->next->n;
-
-	pop_handler(stack, line_no);
-}
-
-/**
- * sub_handler - subtracts the top element of the stack
- *				from the second top element
- * @stack: double pointer to the stack
- * @line_no: the line number where the pop command is called
- * Return: nothing
- */
-void sub_handler(stack_t **stack, unsigned int line_no)
-{
-	int size = stack_size((*stack)->next);
-
-	if (size < 2)
-	{
-		fprintf(stderr, "L%d: can't sub, stack too short\n", line_no);
-		global.err_status = EXIT_FAILURE;
-		return;
-	}
-
-	(*stack)->next->next->n -= (*stack)->next->n;
-
-	pop_handler(stack, line_no);
+	printf("%c\n", (*stack)->n);
 }
